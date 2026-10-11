@@ -1,0 +1,23 @@
+{
+  "recording": true,
+  "intercept_hosts": [
+    "*"
+  ],
+  "bypass_hosts": [],
+  "capture_bytes": 65536,
+  "max_flows": 1000,
+  "latency_ms": 0,
+  "upload_bytes_per_second": 0,
+  "download_bytes_per_second": 0,
+  "aggregate_upload_bytes_per_second": 0,
+  "aggregate_download_bytes_per_second": 0,
+  "offline": false,
+  "process_attribution": false,
+  "failure_percent": 0,
+  "drop_upload_after_bytes": null,
+  "drop_download_after_bytes": null,
+  "no_cache": false,
+  "block_cookies": false,
+  "rules": [],
+  "dns_overrides": {}
+}

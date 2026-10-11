@@ -1,0 +1,396 @@
+@import 'tailwindcss';
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+}
+
+:root {
+  color-scheme: light;
+  --background: oklch(0.98 0.003 260);
+  --foreground: oklch(0.25 0.02 260);
+  --card: oklch(1 0 0);
+  --primary: oklch(0.5 0.11 175);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.008 260);
+  --muted: oklch(0.96 0.006 260);
+  --muted-foreground: oklch(0.5 0.025 260);
+  --accent: oklch(0.94 0.025 175);
+  --accent-foreground: oklch(0.38 0.085 175);
+  --destructive: oklch(0.55 0.19 25);
+  --border: oklch(0.9 0.01 260);
+  --success: oklch(0.46 0.105 165);
+  --warning: oklch(0.48 0.115 70);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.18 0.012 260);
+  --foreground: oklch(0.92 0.008 260);
+  --card: oklch(0.21 0.014 260);
+  --primary: oklch(0.76 0.12 175);
+  --primary-foreground: oklch(0.2 0.025 175);
+  --secondary: oklch(0.29 0.015 260);
+  --muted: oklch(0.25 0.014 260);
+  --muted-foreground: oklch(0.7 0.022 260);
+  --accent: oklch(0.29 0.035 175);
+  --accent-foreground: oklch(0.85 0.1 175);
+  --destructive: oklch(0.76 0.13 25);
+  --border: oklch(0.33 0.015 260);
+  --success: oklch(0.78 0.12 165);
+  --warning: oklch(0.8 0.12 80);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply m-0 bg-background font-sans text-sm text-foreground antialiased;
+  }
+  #root {
+    @apply flex h-dvh min-h-0 flex-col overflow-hidden;
+  }
+  button:not(:disabled),
+  summary {
+    @apply cursor-pointer;
+  }
+  a {
+    @apply text-inherit no-underline;
+  }
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+  code,
+  pre,
+  kbd {
+    @apply font-mono;
+  }
+  input[type='checkbox'] {
+    @apply size-4 shrink-0 accent-primary;
+  }
+  dialog {
+    @apply fixed inset-0 m-auto max-h-[90dvh] w-[min(660px,calc(100vw-32px))] overflow-auto rounded-xl border bg-card p-5 text-foreground shadow-2xl;
+  }
+  dialog::backdrop {
+    @apply bg-black/50 backdrop-blur-xs;
+  }
+  dialog[open] {
+    @apply flex flex-col overflow-hidden;
+  }
+  dialog > form {
+    @apply flex min-h-0 flex-col;
+  }
+  dialog h2 {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  dialog h3 {
+    @apply mt-4 font-semibold;
+  }
+  dialog p,
+  dialog li {
+    @apply my-3 text-xs leading-6 text-muted-foreground;
+  }
+  dialog ol {
+    @apply list-decimal pl-5;
+  }
+  dialog li {
+    @apply my-3;
+  }
+  dialog pre {
+    @apply overflow-x-auto rounded-md bg-muted p-3 text-xs whitespace-pre-wrap;
+  }
+  dialog label {
+    @apply my-3 flex min-w-0 flex-col gap-1.5 text-xs font-medium text-muted-foreground;
+  }
+  dialog small {
+    @apply text-[11px] leading-5 text-muted-foreground;
+  }
+  textarea {
+    @apply font-mono text-xs! leading-6!;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-[10px] font-semibold tracking-wider text-muted-foreground uppercase;
+  }
+  .host {
+    @apply h-9 w-full justify-start gap-2 rounded-md px-2 text-xs;
+  }
+  .session-action {
+    @apply h-8 w-full justify-start px-2 text-xs;
+  }
+  .traffic {
+    @apply w-full table-fixed border-collapse;
+  }
+  .traffic th {
+    @apply sticky top-0 z-10 border-b bg-muted px-3 py-2.5 text-left text-[9px] font-semibold tracking-wider text-muted-foreground uppercase;
+  }
+  .traffic th:first-child {
+    @apply w-[70px] pl-5;
+  }
+  .traffic th:nth-child(3) {
+    @apply w-[70px];
+  }
+  .traffic th:nth-child(4) {
+    @apply w-[85px];
+  }
+  .traffic td {
+    @apply border-b border-border/60 px-3 py-3 text-[11px] text-muted-foreground tabular-nums;
+  }
+  .traffic td:first-child {
+    @apply pl-5;
+  }
+  .traffic tbody tr {
+    @apply cursor-pointer scroll-mt-9 hover:bg-accent/40 focus-visible:bg-accent/60 focus-visible:outline-none;
+  }
+  .traffic tr.selected {
+    @apply bg-accent/60;
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+  .request-path {
+    @apply block truncate text-xs font-medium text-foreground;
+  }
+  .request-meta {
+    @apply mt-1 block truncate text-[10px] text-muted-foreground;
+  }
+  .method-label {
+    @apply mr-1.5 text-[9px] font-semibold text-primary;
+  }
+  .empty,
+  .detail-empty {
+    @apply px-6 py-12 text-center text-muted-foreground;
+  }
+  .empty h2,
+  .detail-empty h2 {
+    @apply mb-2 text-base font-medium text-foreground;
+  }
+  .empty p,
+  .detail-empty p {
+    @apply mx-auto mb-5 max-w-72 text-xs leading-6;
+  }
+  .empty code {
+    @apply mb-4 block rounded-md border bg-muted p-3 text-[10px] [overflow-wrap:anywhere];
+  }
+  .inspector {
+    @apply min-h-0 min-w-0 overflow-auto overscroll-contain border-t bg-muted/15 sm:col-start-2 lg:col-start-auto lg:border-t-0;
+  }
+  .detail-empty {
+    @apply grid h-full content-center;
+  }
+  .detail-empty > span {
+    @apply mb-3 text-3xl text-primary/40;
+  }
+  .detail-heading {
+    @apply bg-card p-5;
+  }
+  .detail-heading h2 {
+    @apply mt-2 mb-1 text-lg font-semibold tracking-tight [overflow-wrap:anywhere];
+  }
+  .detail-heading p {
+    @apply font-mono text-[10px] leading-5 [overflow-wrap:anywhere] text-muted-foreground;
+  }
+  .detail-actions {
+    @apply mt-4 flex flex-wrap gap-1.5;
+  }
+  .detail-actions button {
+    @apply h-7 px-2 text-[11px];
+  }
+  .tabs {
+    @apply sticky top-0 z-10 flex gap-4 border-b bg-card px-5;
+  }
+  .detail-content {
+    @apply p-5;
+  }
+  .section-heading {
+    @apply mb-3 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase;
+  }
+  .info-grid {
+    @apply mb-7 grid grid-cols-[100px_minmax(0,1fr)] gap-3 text-xs [overflow-wrap:anywhere];
+  }
+  .info-pair {
+    @apply contents;
+  }
+  .info-grid dt {
+    @apply text-muted-foreground;
+  }
+  .info-grid dd {
+    @apply m-0;
+  }
+  .headers-table {
+    @apply mb-5 w-full table-fixed border-collapse font-mono text-[11px] leading-6;
+  }
+  .headers-table td {
+    @apply border-b border-border/60 py-1.5 align-top [overflow-wrap:anywhere];
+  }
+  .headers-table td:first-child {
+    @apply w-2/5 pr-3 text-muted-foreground;
+  }
+  .body-tools {
+    @apply mt-6 mb-3 flex flex-wrap items-center justify-between gap-2;
+  }
+  .body-tools .section-heading {
+    @apply m-0;
+  }
+  .body-tools > div {
+    @apply flex items-center gap-1.5;
+  }
+  .body-tools select,
+  .body-tools button {
+    @apply h-7 text-[10px];
+  }
+  .body-content {
+    @apply max-h-[65dvh] overflow-auto rounded-md border bg-card p-3 font-mono text-[11px] leading-6 [overflow-wrap:anywhere] whitespace-pre-wrap;
+  }
+  .body-content img {
+    @apply max-w-full;
+  }
+  .body-content details {
+    @apply ml-2.5;
+  }
+  .body-content summary {
+    @apply text-primary;
+  }
+  .notice {
+    @apply my-3 rounded-md border border-warning/25 bg-warning/10 p-3 text-xs leading-6 [overflow-wrap:anywhere] text-warning;
+  }
+  .timing-row {
+    @apply my-4 grid grid-cols-[90px_minmax(0,1fr)_60px] items-center gap-2 text-[11px] text-muted-foreground;
+  }
+  progress {
+    @apply h-1.5 w-full appearance-none overflow-hidden rounded-md border-0 bg-muted;
+  }
+  progress::-webkit-progress-bar {
+    @apply bg-muted;
+  }
+  progress::-webkit-progress-value {
+    @apply bg-primary;
+  }
+  progress::-moz-progress-bar {
+    @apply bg-primary;
+  }
+  .hint {
+    @apply text-xs leading-6 text-muted-foreground;
+  }
+  .muted {
+    @apply text-muted-foreground;
+  }
+  .dialog-heading {
+    @apply mb-4 flex shrink-0 items-center justify-between gap-3;
+  }
+  .dialog-heading button {
+    @apply h-7 w-7 p-0 text-xl text-muted-foreground;
+  }
+  .dialog-footer {
+    @apply mt-5 flex shrink-0 justify-end gap-2 border-t bg-card pt-4;
+  }
+  .dialog-scroll {
+    @apply min-h-0 overflow-auto overscroll-contain;
+  }
+  .form-grid {
+    @apply grid grid-cols-1 gap-x-4 sm:grid-cols-2;
+  }
+  .check-row {
+    @apply flex flex-wrap items-center gap-x-5;
+  }
+  .check-row label {
+    @apply flex-row items-center;
+  }
+  .compose-url {
+    @apply grid grid-cols-[80px_minmax(0,1fr)] gap-3;
+  }
+  .body-label {
+    @apply mt-4 mb-2 flex items-center justify-between gap-2;
+  }
+  .body-label label {
+    @apply m-0;
+  }
+  .body-label select {
+    @apply h-7 text-xs;
+  }
+  .rule-examples {
+    @apply flex flex-wrap items-center gap-2;
+  }
+  .toast {
+    @apply fixed bottom-5 left-1/2 z-50 max-w-[90vw] -translate-x-1/2 rounded-lg border bg-foreground px-4 py-3 text-xs [overflow-wrap:anywhere] text-background shadow-lg;
+  }
+  .breakpoints-dialog {
+    @apply w-[min(1050px,calc(100vw-32px))];
+  }
+  .pause-workspace {
+    @apply grid min-h-0 grid-cols-1 gap-5 overflow-auto md:grid-cols-[225px_minmax(0,1fr)];
+  }
+  .breakpoint-list {
+    @apply max-h-[22dvh] overflow-auto border-b pb-3 md:max-h-[70dvh] md:border-r md:border-b-0 md:pr-3;
+  }
+  .breakpoint-list button {
+    @apply mb-2 h-auto w-full flex-col items-start gap-1 p-3 text-left whitespace-normal;
+  }
+  .breakpoint-list button.active {
+    @apply border-primary/40 bg-accent;
+  }
+  .breakpoint-list button span:last-child {
+    @apply font-mono text-[10px] leading-5 [overflow-wrap:anywhere] text-muted-foreground;
+  }
+  .pause-title {
+    @apply flex flex-wrap items-start justify-between gap-2;
+  }
+  .pause-title h3 {
+    @apply my-1.5 text-sm [overflow-wrap:anywhere];
+  }
+  .pending-time {
+    @apply text-[10px] whitespace-nowrap text-warning;
+  }
+  .pause-editor {
+    @apply min-w-0;
+  }
+  .pause-editor fieldset {
+    @apply m-0 min-w-0 border-0 p-0 disabled:opacity-60;
+  }
+  .pause-actions {
+    @apply my-5 flex flex-wrap justify-end gap-2;
+  }
+  .pause-actions .danger {
+    @apply mr-auto text-destructive;
+  }
+  .pause-preview {
+    @apply mt-4 border-t pt-4;
+  }
+  .pause-preview > summary {
+    @apply text-xs text-muted-foreground;
+  }
+  .pause-editor input[name='status'] {
+    @apply max-w-28;
+  }
+  .session-dialog {
+    @apply w-[340px] p-0;
+  }
+  .session-dialog > .dialog-heading {
+    @apply mb-0 px-5 pt-5;
+  }
+}

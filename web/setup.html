@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>OpenProxy · Device setup</title>
+  <style>
+    body {
+      font: 17px/1.65 system-ui;
+      max-width: 760px;
+      margin: 50px auto;
+      padding: 0 24px;
+      color: #1d293b;
+      background: #f6f8fb;
+    }
+    a {
+      color: #235fd1;
+    }
+    h1 {
+      letter-spacing: -1px;
+    }
+    code {
+      background: #e7edf5;
+      padding: 2px 5px;
+    }
+    li {
+      margin: 12px 0;
+    }
+  </style>
+  <h1>Connect your device</h1>
+  <p>
+    Your device can reach OpenProxy. For HTTPS inspection, install this instance's public
+    certificate.
+  </p>
+  <p>
+    <a href="/ca.cer" download="openproxy-ca.cer">Download CA certificate (DER)</a> ·
+    <a href="/ca.pem" download="openproxy-ca.pem">Download PEM</a>
+  </p>
+  <h2>iPhone / iPad</h2>
+  <ol>
+    <li>
+      Set the Wi-Fi HTTP proxy to Manual. Enter your Linux computer's LAN address and proxy port
+      (default 8080).
+    </li>
+    <li>Open <code>http://openproxy.local/</code> in Safari.</li>
+    <li>Download the certificate above.</li>
+    <li>Install the downloaded profile in Settings → General → VPN &amp; Device Management.</li>
+    <li>Enable full trust in Settings → General → About → Certificate Trust Settings.</li>
+    <li>Open your app.</li>
+    <li>Find its requests in the OpenProxy inspector on your computer.</li>
+  </ol>
+  <h2>Android</h2>
+  <ol>
+    <li>Set your Wi-Fi proxy to Manual.</li>
+    <li>Enter your computer's LAN address and proxy port (default 8080).</li>
+    <li>Download the CA certificate.</li>
+    <li>
+      Install it in Settings → Security → Encryption &amp; credentials (names vary by device).
+    </li>
+    <li>
+      For your own app, enable user CA trust only in a debug build with Android Network Security
+      Configuration.
+    </li>
+  </ol>
+  <p>The README mobile guide gives the XML configuration.</p>
+  <h2>When an app does not appear</h2>
+  <p>
+    The app can ignore the proxy, use UDP/QUIC, reject user certificates, or pin its server's
+    certificate. Use the app's debug configuration. For hosts with certificate pinning, use
+    OpenProxy's bypass list to keep encrypted connections.
+  </p>
+  <h2>Automatic configuration / SOCKS</h2>
+  <p>
+    For Wi-Fi Automatic proxy settings, use <code>http://COMPUTER_LAN_IP:8080/proxy.pac</code>. For
+    SOCKS, start a LAN SOCKS listener, for example <code>--socks 0.0.0.0:1080</code>. Use
+    <code>http://COMPUTER_LAN_IP:8080/socks.pac</code> for its PAC URL. Replace 8080 with your HTTP
+    setup port. Use the computer's LAN IP so the phone can retrieve the PAC file directly.
+  </p>
+  <p>
+    <a href="/proxy.pac">HTTP PAC file</a> ·
+    <a href="/socks.pac">SOCKS PAC file (with a SOCKS listener)</a>
+  </p>
+  <p>
+    After use, remove the Wi-Fi proxy and debugging CA. Keep session files private. They can contain
+    credentials and personal data.
+  </p>
+  <p>
+    <a href="https://support.apple.com/en-us/102390">Apple trust instructions</a> ·
+    <a href="https://developer.android.com/privacy-and-security/security-config"
+      >Android security configuration</a
+    >
+  </p>
+</html>

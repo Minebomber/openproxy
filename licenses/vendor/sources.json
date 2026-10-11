@@ -1,0 +1,14 @@
+{
+  "include_dir@0.7.4": {
+    "file": "include_dir-MIT.txt",
+    "source": "https://raw.githubusercontent.com/Michael-F-Bryan/include_dir/d742c6fffce99ee89da91b934e7ce6fb2a82680c/LICENSE"
+  },
+  "include_dir_macros@0.7.4": {
+    "file": "include_dir-MIT.txt",
+    "source": "https://raw.githubusercontent.com/Michael-F-Bryan/include_dir/d742c6fffce99ee89da91b934e7ce6fb2a82680c/LICENSE"
+  },
+  "asn1-rs-impl@0.2.0": {
+    "file": "asn1-rs-impl-MIT.txt",
+    "source": "https://raw.githubusercontent.com/rusticata/asn1-rs/a20e5f7319c896737ad0f2557037817b91ad854f/LICENSE-MIT"
+  }
+}

@@ -1,0 +1,66 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  rust-and-wire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm --prefix web ci
+      - run: npm --prefix web run format:check
+      - run: npm --prefix web run build
+      - run: node --experimental-strip-types --test tests/frontend.test.mjs
+      - run: cargo fmt --check
+      - run: cargo clippy --locked --all-targets -- -D warnings
+      - run: cargo test --locked
+      - run: cargo build --locked
+      - run: python3 tests/integration.py
+      - run: python3 tests/transport.py
+      - run: python3 tests/connections.py
+      - run: python3 tests/protocols.py
+      - run: python3 tests/simulation.py --long
+      - name: Install isolated desktop fixture dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-bin gsettings-desktop-schemas
+      - run: python3 tests/linux.py
+      - name: Install browser acceptance runner
+        run: |
+          npm install --global agent-browser@0.38.2
+          agent-browser install --with-deps
+      - run: python3 tests/browser.py
+      - run: python3 tests/protocols-browser.py
+
+  release:
+    needs: rust-and-wire
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm --prefix web ci
+      - run: npm --prefix web run build
+      - run: cargo build --release --locked
+      - name: Verify release behavior
+        env:
+          OPENPROXY_BIN: target/release/openproxy
+        run: |
+          python3 tests/integration.py
+          python3 tests/transport.py
+          python3 tests/connections.py
+          python3 tests/protocols.py
