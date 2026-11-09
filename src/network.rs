@@ -283,6 +283,13 @@ async fn sniff(stream: &mut TcpStream) -> Result<(Protocol, Vec<u8>)> {
     Ok((protocol, prefix))
 }
 
+fn client_hello_name(record: &[u8]) -> Option<String> {
+    let mut acceptor = rustls::server::Acceptor::default();
+    acceptor.read_tls(&mut &record[..]).ok()?;
+    let hello = acceptor.accept().ok()??;
+    hello.client_hello().server_name().map(str::to_owned)
+}
+
 async fn socks(mut stream: TcpStream, state: Arc<App>, mut conn: Connection) -> Result<()> {
     let target = tokio::time::timeout(
         Duration::from_secs(15),
@@ -318,7 +325,25 @@ async fn socks(mut stream: TcpStream, state: Arc<App>, mut conn: Connection) -> 
             .map_or(Ok(conn.local), crate::connector::Transport::local_addr)?,
     )
     .await?;
-    let (protocol, prefix) = sniff(&mut stream).await?;
+    let (protocol, mut prefix) = sniff(&mut stream).await?;
+    // VPN and tun redirectors send IP targets. Use the TLS SNI so that the leaf and upstream verification use the host name.
+    let target = if protocol == Protocol::Tls
+        && target
+            .host()
+            .trim_matches(['[', ']'])
+            .parse::<IpAddr>()
+            .is_ok()
+    {
+        let record = 5 + usize::from(u16::from_be_bytes([prefix[3], prefix[4]]));
+        let mut rest = vec![0; record.saturating_sub(prefix.len())];
+        tokio::time::timeout(Duration::from_secs(15), stream.read_exact(&mut rest)).await??;
+        prefix.extend_from_slice(&rest);
+        client_hello_name(&prefix)
+            .and_then(|name| format!("{name}:{}", target.port_u16()?).parse().ok())
+            .unwrap_or(target)
+    } else {
+        target
+    };
     let (reader, writer) = stream.into_split();
     let stream = tokio::io::join(std::io::Cursor::new(prefix).chain(reader), writer);
     let host = target.host().trim_start_matches('[').trim_end_matches(']');

@@ -351,7 +351,7 @@ With the SOCKS listener active, send a request:
 curl --socks5-hostname 127.0.0.1:1080 --cacert data/ca.pem https://example.com/
 ```
 
-SOCKS5 examines HTTP/TLS traffic that it recognizes. Other TCP traffic uses an opaque tunnel. For automatic SOCKS setup, use `/socks.pac` on the HTTP setup listener. For remote devices, bind SOCKS to a LAN or wildcard address.
+SOCKS5 examines HTTP/TLS traffic that it recognizes. Other TCP traffic uses an opaque tunnel. If a client sends an IP address target, TLS inspection uses the client's TLS server name (SNI). VPN and tun redirectors usually send IP address targets. For automatic SOCKS setup, use `/socks.pac` on the HTTP setup listener. For remote devices, bind SOCKS to a LAN or wildcard address.
 
 Reverse clients connect directly to the local HTTP listener. `http://127.0.0.1:9000/products` maps to `https://api.example.com/v1/products`. Reverse targets cannot contain a query string. OpenProxy preserves incoming queries.
 

@@ -141,6 +141,18 @@ class Transport(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(result.stdout.endswith(b'\n2'), result.stdout)
 
+    def test_ip_socks_target_uses_tls_sni_for_certificate(self):
+        # VPN redirectors send IP targets. The leaf must match the SNI host name.
+        sock, code, _ = connect_socks(self.socks, '127.0.0.1', integration.Acceptance.tls_origin.server_port, domain=False)
+        self.assertEqual(code, 0)
+        context = ssl.create_default_context(cafile=str(self.p.data / 'ca.pem'))
+        tls = context.wrap_socket(sock, server_hostname='localhost')
+        try:
+            status, _, body = self.http_over_socket(tls)
+            self.assertEqual(status, 200, body)
+        finally:
+            tls.close()
+
     def test_ipv6_socks_target_and_http_listener(self):
         class IPv6Origin(http.server.ThreadingHTTPServer):
             address_family = socket.AF_INET6
