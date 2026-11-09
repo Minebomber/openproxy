@@ -269,6 +269,25 @@ Set `android:networkSecurityConfig="@xml/network_security_config"` on `<applicat
 
 The Android emulator usually reaches the Linux host at `10.0.2.2`. After use, remove the device's proxy setting and debugging certificate. Apps with certificate pinning can reject interception. **Bypass HTTPS hosts** keeps their encrypted connection.
 
+**Android emulator with a system CA:** apps for API 24 and later trust only system CAs by default. To inspect apps that you do not own, use an emulator:
+
+1. Make an AVD from a **Google APIs** system image. Google Play images do not allow `adb root`.
+2. Start OpenProxy. Set the emulator proxy:
+
+   ```sh
+   adb shell settings put global http_proxy 10.0.2.2:8080
+   ```
+
+3. Add the CA to the system and user CA stores:
+
+   ```sh
+   scripts/android-system-ca.sh data/ca.pem
+   ```
+
+If more than one device is connected, set `ANDROID_SERIAL` first. The system CA stays until the next cold boot. Quick Boot snapshots keep it. After a cold boot, run the script again. Chrome ignores added system CAs and uses the user CA.
+
+On Android 17, apps for API 37 require Certificate Transparency for system CAs. These apps reject OpenProxy certificates. Use an Android 16 image for them. To remove the proxy, run `adb shell settings put global http_proxy :0`.
+
 ## Linux desktop setup
 
 Set your browser's HTTP and HTTPS proxy to `127.0.0.1:8080`. Import `data/ca.pem` into its certificate authorities. Use an isolated browser profile for debugging settings. OpenProxy does not install certificates or change desktop settings on startup.
